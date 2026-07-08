@@ -294,4 +294,5 @@ curl.exe -X PATCH http://127.0.0.1:5000/lists/LIST_ID/items/ITEM_ID -H "Content-
 
 ## Lecture notes
 
-See [`diagram-confusion-side-story.md`](diagram-confusion-side-story.md) for a meta note on how the Mermaid diagrams in this repo were added (including a brief mix-up between this tinker lab and the separate CineLog homework project).
+- [`lecture-m2-lesson6-git-collaboration.md`](lecture-m2-lesson6-git-collaboration.md) — Module 2 Lesson 6 (Git and Collaboration) Mermaid diagrams and MCQ explanations
+- [`diagram-confusion-side-story.md`](diagram-confusion-side-story.md) — meta note on how diagram work for this repo vs CineLog homework got mixed up
