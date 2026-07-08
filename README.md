@@ -95,92 +95,12 @@ review_template.md      Template for your code review notes
 
 This lab includes two proposed PRs under `prs/`. Read the description before inspecting the code — it states what the PR intends; the code shows what it actually changes.
 
-### Review process
+1. Read `review_template.md`
+2. Open each PR description under `prs/`
+3. Inspect the matching `.py` file and compare against `routes/lists.py`, `services/list_service.py`, and `models.py`
+4. Write your review notes in `review_template.md`
 
-```mermaid
-flowchart TD
-    A[Start Review] --> B[Read README.md]
-    B --> C[Understand current app structure]
-    C --> D[Read review_template.md]
-    D --> E[Open PR description]
-    E --> F[Inspect PR code file]
-    F --> G[Compare PR behavior to existing service/model logic]
-    G --> H[Test or mentally trace behavior]
-    H --> I[Identify correctness, edge cases, and maintainability issues]
-    I --> J[Write review comments]
-    J --> K[Submit completed review]
-```
-
-### How PR files relate to the app
-
-```mermaid
-flowchart TD
-    A[PR Review Materials] --> B[PR 1: Bulk Purchase]
-    A --> C[PR 2: List Stats]
-    B --> B1[prs/pr1_description.md]
-    B --> B2[prs/pr1_bulk_purchase.py]
-    C --> C1[prs/pr2_description.md]
-    C --> C2[prs/pr2_list_stats.py]
-    B2 --> D[Compare against existing app logic]
-    C2 --> D
-    D --> E[routes/lists.py]
-    D --> F[services/list_service.py]
-    D --> G[models.py]
-    E --> H[Review feedback]
-    F --> H
-    G --> H
-```
-
-### Code review checklist
-
-Keep this open next to your editor while reviewing.
-
-```mermaid
-mindmap
-  root((Code Review Checklist))
-    Correctness
-      Does the code do what the PR description claims?
-      Are all relevant cases handled?
-      Are errors handled clearly?
-    Integration
-      Does it match existing route/service/model patterns?
-      Does it reuse existing helpers?
-      Does it break current behavior?
-    Data Model
-      Does it read/write the correct fields?
-      Are database changes safe?
-      Are relationships respected?
-    Edge Cases
-      Empty list
-      Missing item
-      Invalid quantity
-      Already purchased item
-      Duplicate item
-    Maintainability
-      Is the code simple?
-      Are names clear?
-      Is logic duplicated?
-      Would future developers understand it?
-    Testing
-      What behavior should be tested?
-      What regression could happen?
-```
-
-### Read less, understand more
-
-Do not read every file equally. Build a map first, then trace one specific behavior.
-
-```mermaid
-flowchart TD
-    A[Too much text/code] --> B[Create file map]
-    B --> C[Identify important files]
-    C --> D[Trace one user action]
-    D --> E[Summarize each file in one sentence]
-    E --> F[Inspect PR diff]
-    F --> G["Ask: what behavior changed?"]
-    G --> H["Ask: what could break?"]
-    H --> I[Write review notes]
-```
+> **Project 6 (CineLog)** is a separate assignment — responding to review comments as a contributor, not reviewing others' PRs. See [`../cinelog-orientation.md`](../cinelog-orientation.md) for those workflow diagrams.
 
 ## Running example requests
 
