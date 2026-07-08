@@ -93,7 +93,83 @@ review_template.md      Template for your code review notes
 
 ## PR review workflow
 
-This lab includes two proposed PRs under `prs/`. Read the description before inspecting the code — it states what the PR intends; the code shows what it actually changes.
+This lab includes two proposed PRs under `prs/`. Read the description before inspecting the code — it states what the PR intends; the code shows what it actually changes. Treat each PR description's "Expected behavior" section as a formal contract.
+
+### Tinker milestone workflow
+
+Follow the lab in this order: read the codebase, test base behavior, review PR #1, review PR #2, then complete `review_template.md`.
+
+```mermaid
+flowchart TD
+    A[Start Tinker 6: GroceryList] --> B[Set up repo and environment]
+    B --> C[Seed database]
+    C --> D[Run base app]
+    D --> E[Read codebase]
+    E --> E1[README.md]
+    E --> E2[models.py]
+    E --> E3[routes/lists.py]
+    E --> E4[services/list_service.py]
+    E --> E5[review_template.md]
+    E --> F[Explore working app behavior]
+    F --> F1[Test normal purchase]
+    F --> F2[Test duplicate purchase]
+    F --> F3[Test bad item ID]
+    F --> G[Review PR 1: Bulk Purchase]
+    G --> G1[Compare description against implementation]
+    G --> G2[Test purchase-all endpoint]
+    G --> G3[Write PR 1 review]
+    G --> H[Review PR 2: List Stats]
+    H --> H1[Compare frontend use case against stats computation]
+    H --> H2[Test stats endpoint]
+    H --> H3[Test bad list ID]
+    H --> H4[Write PR 2 review]
+    H --> I[Complete review_template.md]
+```
+
+### PR description as contract
+
+Turn each expected-behavior bullet into a yes/no question, then check the code line by line.
+
+```mermaid
+flowchart TD
+    A[Read PR description] --> B[Extract expected behavior bullets]
+    B --> C[Turn each bullet into a yes/no question]
+    C --> D[Find code lines responsible for that behavior]
+    D --> E{Does implementation match the requirement?}
+    E -- Yes --> F[Mark requirement satisfied]
+    E -- No --> G[Write review finding]
+    G --> G1[Location]
+    G --> G2[Problem]
+    G --> G3[Real-world consequence]
+    G --> G4[Concrete fix]
+    F --> H[Move to next requirement]
+    G --> H
+```
+
+### AI-generated bug patterns
+
+Where to look first in AI-generated PRs — the happy path usually works; edge cases often do not.
+
+```mermaid
+mindmap
+  root((AI-Generated Code Review Risks))
+    Wrong filter scope
+      Query retrieves too many records
+      Happy path hides the bug
+      Example: affects already-purchased items
+    Misleading return values
+      Count measures total records
+      Caller expects changed records
+      Example: returns all items instead of newly purchased
+    Unvalidated inputs
+      Missing required fields
+      None written into database
+      Downstream data corruption
+    Semantic mismatch
+      Code computes a plausible value
+      But not the value requested
+      Example: category counts all items instead of remaining items
+```
 
 ### Review process
 
@@ -215,3 +291,7 @@ curl.exe -X PATCH http://127.0.0.1:5000/lists/LIST_ID/items/ITEM_ID -H "Content-
 ```
 
 (Git Bash users can run the Mac/Linux commands as written.)
+
+## Lecture notes
+
+See [`diagram-confusion-side-story.md`](diagram-confusion-side-story.md) for a meta note on how the Mermaid diagrams in this repo were added (including a brief mix-up between this tinker lab and the separate CineLog homework project).
