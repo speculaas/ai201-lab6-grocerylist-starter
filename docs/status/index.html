@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workstream board</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1 id="page-title">Loading…</h1>
+      <p id="page-caption" class="caption"></p>
+    </header>
+
+    <div class="layout">
+      <section class="panel panel-graph">
+        <div class="panel-head">
+          <h2>Overview graph</h2>
+          <div class="graph-toolbar">
+            <div class="orient-toggle" role="group" aria-label="Git graph orientation">
+              <button type="button" id="orient-lr" class="orient-btn" data-orient="LR" title="Left → right">LR</button>
+              <button type="button" id="orient-tb" class="orient-btn" data-orient="TB" title="Top → bottom (same idea as flowchart TD)">TB</button>
+            </div>
+            <div class="zoom-toggle" role="group" aria-label="Git graph zoom">
+              <button type="button" id="zoom-out" class="orient-btn" title="Zoom out">−</button>
+              <button type="button" id="zoom-label" class="orient-btn zoom-label" title="Reset zoom to 100%">100%</button>
+              <button type="button" id="zoom-in" class="orient-btn" title="Zoom in">+</button>
+            </div>
+          </div>
+        </div>
+        <div id="mermaid-host"></div>
+        <p id="graph-hint" class="hint">
+          Loading graph…
+        </p>
+      </section>
+
+      <section class="panel panel-details">
+        <div class="panel-head">
+          <h2>Branches</h2>
+        </div>
+        <div id="branch-board" class="branch-board-scroll"></div>
+        <p class="hint">
+          Both columns are viewport-sized with their own scrollbars so large graphs
+          and long branch lists stay inside the viewport.
+        </p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

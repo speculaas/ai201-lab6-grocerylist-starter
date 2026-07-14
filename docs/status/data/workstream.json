@@ -1,0 +1,157 @@
+{
+  "title": "AI201 Project 6 CineLog — conceptual workstream board",
+  "caption": "Conceptual workstream from the Project 6 (CineLog) homework chat — not literal git history. Hosted under lab6-grocerylist docs/ for github.io; not the GroceryList lab itself.",
+  "mermaid": "gitGraph LR:\n    commit id: \"Orient on starter and projects.txt\"\n    commit id: \"Locate upstream PR #1 review comments\"\n    branch understand_api\n    checkout understand_api\n    commit id: \"Confirm API-only no GUI\"\n    commit id: \"Map watchlist REST endpoints from routes\"\n    commit id: \"Enable optional HOST bind for LAN curl\"\n    checkout main\n    branch review_comments\n    checkout review_comments\n    commit id: \"Comment 1 rename add_to_watchlist\"\n    commit id: \"Comment 2 deduplication + 409\"\n    commit id: \"Comment 3 nonexistent film_id test\"\n    commit id: \"Comment 5 date_added sort\"\n    commit id: \"Comment 6 rebase UUID WatchlistEntry\"\n    commit id: \"Comments 4 and 5 written decisions\"\n    checkout main\n    branch git_hygiene\n    checkout git_hygiene\n    commit id: \"Conventional commits and interactive rebase\"\n    commit id: \"Force-with-lease push after rewrite\"\n    commit id: \"git log screenshot in pr-response\"\n    commit id: \"OPEN: fork PR feature to main\"\n    commit id: \"OPEN: Course Portal branch URL\"\n    checkout main\n    branch tooling_notes\n    checkout tooling_notes\n    commit id: \"pytest workflow documented\"\n    commit id: \"vi rebase todo vs message buffer\"\n    commit id: \"Status board pattern reused\"",
+  "branches": [
+    {
+      "id": "understand_api",
+      "label": "Orient & API",
+      "status": "done",
+      "summary": "No frontend; endpoints inferred from routes; optional HOST=0.0.0.0 for LAN; pytest is the primary verify path.",
+      "nodes": [
+        {
+          "id": "orient",
+          "title": "Orient on starter and projects.txt",
+          "status": "done",
+          "detail": "Submission center is pr-response.md + feature/watchlist work, not README study diagrams. Graded deliverable: branch URL, PR, conventional history, six comment responses."
+        },
+        {
+          "id": "pr1",
+          "title": "Locate upstream PR #1 review comments",
+          "status": "done",
+          "detail": "Only jamjamgobambam/ai201-project6-cinelog-starter/pull/1. Ignore other students' PRs and drive-by comments on #1."
+        },
+        {
+          "id": "no_gui",
+          "title": "Confirm API-only no GUI",
+          "status": "done",
+          "detail": "GET / → 404 is expected. ReproduceOrInspect = read code, pytest, optional curl — nothing separate to submit for that step."
+        },
+        {
+          "id": "endpoints",
+          "title": "Map watchlist REST endpoints from routes",
+          "status": "done",
+          "detail": "GET /watchlist/{user_id}, POST /watchlist/{user_id}/add. Review comments mostly named services/tests, not a full API table — infer from routes/watchlist/watchlist.py."
+        },
+        {
+          "id": "host_bind",
+          "title": "Enable optional HOST bind for LAN curl",
+          "status": "done",
+          "detail": "Default remains 127.0.0.1; HOST=0.0.0.0 for other machines. Not a graded requirement."
+        }
+      ]
+    },
+    {
+      "id": "review_comments",
+      "label": "Six review comments",
+      "status": "done",
+      "summary": "Code for 1–3, 5 (sort), 6 (UUID); written decisions for 4–5 in pr-response.md.",
+      "nodes": [
+        {
+          "id": "c1",
+          "title": "Comment 1 rename add_to_watchlist",
+          "status": "done",
+          "detail": "save_to_watchlist → add_to_watchlist to match verb_to_noun / add_to_collection; update route call site."
+        },
+        {
+          "id": "c2",
+          "title": "Comment 2 deduplication + 409",
+          "status": "done",
+          "detail": "Mirror collection: AlreadyInWatchlistError after film exists check; route maps 404 / 409."
+        },
+        {
+          "id": "c3",
+          "title": "Comment 3 nonexistent film_id test",
+          "status": "done",
+          "detail": "tests/test_watchlist.py mirrors test_add_to_collection_nonexistent_film_raises."
+        },
+        {
+          "id": "c5_code",
+          "title": "Comment 5 date_added sort",
+          "status": "done",
+          "detail": "get_watchlist orders by WatchlistEntry.date_added.desc(); planning queue vs catalog title sort; parity with collection."
+        },
+        {
+          "id": "c6",
+          "title": "Comment 6 rebase UUID WatchlistEntry",
+          "status": "done",
+          "detail": "Rebase onto upstream/main UUID Film.id; restore WatchlistEntry with String(36) film_id after models dropped the class on rebase."
+        },
+        {
+          "id": "c4_c5_write",
+          "title": "Comments 4 and 5 written decisions",
+          "status": "done",
+          "detail": "public=True for community discovery with privacy tradeoff deferred; newest-first with explicit rejection of alphabetical for personal queues."
+        }
+      ]
+    },
+    {
+      "id": "git_hygiene",
+      "label": "Git hygiene & submit",
+      "status": "open",
+      "summary": "History cleaned and pushed; screenshot in pr-response. Remaining: fork PR body + Course Portal.",
+      "nodes": [
+        {
+          "id": "rebase_i",
+          "title": "Conventional commits and interactive rebase",
+          "status": "done",
+          "detail": "rebase -i upstream/main (or HEAD~N). Todo list ≠ message buffer. fixup collapses docs. reword opens second vi screen for the real message."
+        },
+        {
+          "id": "force_push",
+          "title": "Force-with-lease push after rewrite",
+          "status": "done",
+          "detail": "Plain push rejected non-fast-forward after rebase — expected. Do not pull (merge risk). Use --force-with-lease onto origin feature/watchlist."
+        },
+        {
+          "id": "screenshot",
+          "title": "git log screenshot in pr-response",
+          "status": "done",
+          "detail": "Placeholder in pr-response.md; dropped image via GitHub web editor (user-attachments URL)."
+        },
+        {
+          "id": "fork_pr",
+          "title": "OPEN: fork PR feature to main",
+          "status": "open",
+          "detail": "PR on YOUR fork: feature/watchlist → main (speculaas), not upstream class repo. Compare URL if banner missing.",
+          "commands": [
+            "Open https://github.com/speculaas/ai201-project6-cinelog-starter/compare/main...feature/watchlist",
+            "Paste PR Description from pr-response.md into the PR body"
+          ]
+        },
+        {
+          "id": "portal",
+          "title": "OPEN: Course Portal branch URL",
+          "status": "open",
+          "detail": "Submit https://github.com/speculaas/ai201-project6-cinelog-starter/tree/feature/watchlist with open PR, not a bare repo link to main."
+        }
+      ]
+    },
+    {
+      "id": "tooling_notes",
+      "label": "Tooling & meta",
+      "status": "done",
+      "summary": "pytest, vi rebase mechanics, and this status-board reuse for future chats.",
+      "nodes": [
+        {
+          "id": "pytest",
+          "title": "pytest workflow documented",
+          "status": "done",
+          "detail": "source .venv/bin/activate; pytest tests/ -v. Graders prioritize tests over browser UI."
+        },
+        {
+          "id": "vi_rebase",
+          "title": "vi rebase todo vs message buffer",
+          "status": "done",
+          "detail": "gg dG clears buffer; :cq aborts rebase; label after SHA on todo line is not the commit message; use reword's second buffer."
+        },
+        {
+          "id": "status_board",
+          "title": "Status board pattern reused",
+          "status": "done",
+          "detail": "Copied app.js/styles/index from fed_print_seg docs/status; this JSON is the CineLog homework narrative."
+        }
+      ]
+    }
+  ]
+}
