@@ -167,6 +167,24 @@ function scrollBoardChildIntoView(el) {
   }
 }
 
+/** Scroll the overview graph so a highlighted commit stays inside #mermaid-host. */
+function scrollMermaidHitIntoView() {
+  const hit =
+    mermaidHost.querySelector("circle.commit.ws-hit") ||
+    mermaidHost.querySelector("text.commit-label.ws-hit");
+  if (!hit || !mermaidHost) return;
+  const er = hit.getBoundingClientRect();
+  const sr = mermaidHost.getBoundingClientRect();
+  if (
+    er.top < sr.top ||
+    er.bottom > sr.bottom ||
+    er.left < sr.left ||
+    er.right > sr.right
+  ) {
+    hit.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+  }
+}
+
 function focusBoardTarget(target) {
   clearHighlights();
   if (!target) {
@@ -373,6 +391,8 @@ function highlightMermaidByTitle(title) {
       prev.classList.add("ws-hit");
     }
   });
+
+  scrollMermaidHitIntoView();
 }
 
 function lookupTitle(title) {
