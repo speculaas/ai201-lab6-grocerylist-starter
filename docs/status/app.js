@@ -9,6 +9,7 @@ const captionEl = document.getElementById("page-caption");
 const mermaidHost = document.getElementById("mermaid-host");
 const boardEl = document.getElementById("branch-board");
 const graphHintEl = document.getElementById("graph-hint");
+const boardSelectEl = document.getElementById("board-select");
 
 /** @type {{ branches: Array, byTitle: Map<string, {branchId:string, nodeId:string}>, byBranchId: Map<string, object> }} */
 let catalog = { branches: [], byTitle: new Map(), byBranchId: new Map() };
@@ -37,6 +38,40 @@ function normalizeTitle(s) {
     .trim()
     .replace(/\s+/g, " ")
     .toLowerCase();
+}
+
+async function chooseBoard() {
+  const response = await fetch("data/boards.json");
+  if (!response.ok) {
+    throw new Error(`Failed to load data/boards.json (${response.status})`);
+  }
+
+  const manifest = await response.json();
+  const boards = Array.isArray(manifest.boards) ? manifest.boards : [];
+  if (!boards.length) throw new Error("data/boards.json contains no boards");
+
+  const requestedId = new URLSearchParams(window.location.search).get("board");
+  const board =
+    boards.find((item) => item.id === requestedId) ||
+    boards.find((item) => item.id === manifest.default) ||
+    boards[0];
+
+  boardSelectEl.replaceChildren(
+    ...boards.map((item) => {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.label || item.id;
+      return option;
+    })
+  );
+  boardSelectEl.value = board.id;
+  boardSelectEl.addEventListener("change", () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("board", boardSelectEl.value);
+    window.location.assign(url);
+  });
+
+  return board;
 }
 
 function buildCatalog(branches) {
@@ -508,14 +543,16 @@ function wireZoomControls() {
     });
     window.mermaid = mermaid;
 
-    const response = await fetch("data/workstream.json");
+    const selectedBoard = await chooseBoard();
+    const response = await fetch(`data/${selectedBoard.file}`);
     if (!response.ok) {
-      throw new Error(`Failed to load data/workstream.json (${response.status})`);
+      throw new Error(`Failed to load data/${selectedBoard.file} (${response.status})`);
     }
     const data = await response.json();
 
     catalog = buildCatalog(data.branches || []);
     titleEl.textContent = data.title || "Workstream board";
+    document.title = data.title || "Workstream board";
     captionEl.textContent = data.caption || "";
     boardEl.innerHTML = (data.branches || []).map(renderBranch).join("");
     wireExpandCollapse();

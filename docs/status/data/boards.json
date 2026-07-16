@@ -1,0 +1,10 @@
+{
+  "default": "cinelog",
+  "boards": [
+    {
+      "id": "cinelog",
+      "file": "workstream.json",
+      "label": "Project 6 CineLog"
+    }
+  ]
+}

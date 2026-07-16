@@ -42,10 +42,36 @@ header {
   flex-shrink: 0;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 header h1 {
   margin: 0 0 0.35rem;
   font-size: clamp(1.4rem, 3vw, 2rem);
   letter-spacing: -0.02em;
+}
+
+.board-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.board-picker select {
+  max-width: min(42vw, 20rem);
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: var(--panel);
+  font: inherit;
 }
 
 .caption {
@@ -65,6 +91,16 @@ header h1 {
 }
 
 @media (max-width: 900px) {
+  .title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .board-picker select {
+    max-width: 70vw;
+  }
+
   .page {
     height: auto;
     max-height: none;

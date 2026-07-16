@@ -10,7 +10,7 @@ Personal study board for the Project 6 homework thread: Mermaid overview + expan
 
 ## Run locally
 
-`fetch()` needs HTTP; opening `index.html` as `file://` will not load `data/workstream.json`.
+`fetch()` needs HTTP; opening `index.html` as `file://` will not load the board manifest and workstream JSON.
 
 ```bash
 cd docs/status   # from ai201-lab6-grocerylist-starter root
@@ -21,10 +21,18 @@ Open [http://127.0.0.1:8766/](http://127.0.0.1:8766/)
 
 ## Edit content
 
-Update `data/workstream.json`:
+Each board uses the same structure as `data/workstream.json`:
 
 - `mermaid` — overview gitGraph (study labels)
 - `branches[]` — cards (`status`: `done` | `open` | `blocked`)
+
+To add another board:
+
+1. Add a same-schema JSON file under `data/`.
+2. Register its unique `id`, filename, and display `label` in `data/boards.json`.
+3. Open `?board=<id>` to link directly to it.
+
+The header selector is populated from `data/boards.json`; no build step is required for GitHub Pages.
 
 ## Reusable Copilot prompt & workflow
 
