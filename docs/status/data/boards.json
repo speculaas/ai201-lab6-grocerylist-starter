@@ -5,6 +5,11 @@
       "id": "cinelog",
       "file": "workstream.json",
       "label": "Project 6 CineLog"
+    },
+    {
+      "id": "citerag-publication",
+      "file": "citerag-publication-workstream.json",
+      "label": "CiteRAG Publication"
     }
   ]
 }
