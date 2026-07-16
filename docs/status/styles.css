@@ -178,7 +178,8 @@ header h1 {
   min-width: 0;
 }
 
-.zoom-toggle {
+.zoom-toggle,
+.theme-toggle {
   display: inline-flex;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -203,6 +204,12 @@ header h1 {
   min-width: 3.1rem;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
+}
+
+.orient-btn.theme-label {
+  min-width: 4.6rem;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .orient-btn + .orient-btn {

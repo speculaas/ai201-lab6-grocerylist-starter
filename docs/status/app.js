@@ -17,10 +17,13 @@ let activeKey = null; // `${branchId}::${nodeId}` or `branch::${branchId}`
 let mermaidSource = "";
 let graphOrient = "LR"; // Mermaid gitGraph: LR | TB (TB ≈ flowchart "TD")
 let graphZoom = 1;
+let graphTheme = "default";
 let mermaidBaseSize = null; // { w, h } of unscaled SVG
 let mermaidRenderSeq = 0;
 const ORIENT_KEY = "fedprint-status-gitgraph-orient";
 const ZOOM_KEY = "fedprint-status-gitgraph-zoom";
+const THEME_KEY = "fedprint-status-gitgraph-theme";
+const MERMAID_THEMES = ["default", "neutral", "dark", "forest", "base"];
 const ZOOM_MIN = 0.25;
 const ZOOM_MAX = 4;
 const ZOOM_STEP = 0.1;
@@ -526,6 +529,54 @@ function wireOrientToggle() {
   syncOrientButtons();
 }
 
+function applyMermaidThemeConfig() {
+  if (!window.mermaid) return;
+  window.mermaid.initialize({
+    startOnLoad: false,
+    theme: graphTheme,
+    securityLevel: "loose",
+  });
+}
+
+function syncThemeLabel() {
+  const btn = document.getElementById("theme-cycle");
+  if (!btn) return;
+  btn.textContent = graphTheme;
+  btn.title = `Mermaid theme: ${graphTheme} (click to cycle)`;
+}
+
+async function setGraphTheme(theme, { persist = true } = {}) {
+  const next = MERMAID_THEMES.includes(theme) ? theme : "default";
+  if (next === graphTheme && mermaidHost.querySelector("svg")) {
+    syncThemeLabel();
+    return;
+  }
+  graphTheme = next;
+  if (persist) {
+    try {
+      localStorage.setItem(THEME_KEY, graphTheme);
+    } catch (_) {
+      /* ignore */
+    }
+  }
+  syncThemeLabel();
+  applyMermaidThemeConfig();
+  await renderMermaid(mermaidSource);
+}
+
+function cycleGraphTheme() {
+  const idx = MERMAID_THEMES.indexOf(graphTheme);
+  const next = MERMAID_THEMES[(idx + 1) % MERMAID_THEMES.length];
+  return setGraphTheme(next);
+}
+
+function wireThemeCycle() {
+  document.getElementById("theme-cycle")?.addEventListener("click", () => {
+    cycleGraphTheme();
+  });
+  syncThemeLabel();
+}
+
 function wireZoomControls() {
   document.getElementById("zoom-in")?.addEventListener("click", () => {
     setGraphZoom(graphZoom + ZOOM_STEP);
@@ -556,11 +607,6 @@ function wireZoomControls() {
     const { default: mermaid } = await import(
       "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs"
     );
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: "neutral",
-      securityLevel: "loose",
-    });
     window.mermaid = mermaid;
 
     const selectedBoard = await chooseBoard();
@@ -578,6 +624,7 @@ function wireZoomControls() {
     wireExpandCollapse();
     wireBoardNodeClicks();
     wireOrientToggle();
+    wireThemeCycle();
     wireZoomControls();
 
     try {
@@ -593,12 +640,21 @@ function wireZoomControls() {
     } catch (_) {
       /* ignore */
     }
+    try {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (MERMAID_THEMES.includes(savedTheme)) graphTheme = savedTheme;
+      else graphTheme = "default";
+    } catch (_) {
+      graphTheme = "default";
+    }
     syncOrientButtons();
+    syncThemeLabel();
     syncZoomLabel();
+    applyMermaidThemeConfig();
 
     await renderMermaid(data.mermaid);
     setGraphHint(
-      "Both columns stay in the viewport and scroll internally. Use LR/TB to rotate and − / + to zoom (or Ctrl/⌘ + scroll on the graph)."
+      "Both columns stay in the viewport and scroll internally. Use LR/TB to rotate, the theme button to cycle Mermaid themes, and − / + to zoom (or Ctrl/⌘ + scroll on the graph)."
     );
   } catch (err) {
     titleEl.textContent = "Failed to load status board";
