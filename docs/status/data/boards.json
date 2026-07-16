@@ -10,6 +10,11 @@
       "id": "citerag-publication",
       "file": "citerag-publication-workstream.json",
       "label": "CiteRAG Publication"
+    },
+    {
+      "id": "citerag-publication-local",
+      "file": "citerag-publication-workstream-local.json",
+      "label": "CiteRAG Publication (local)"
     }
   ]
 }
