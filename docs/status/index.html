@@ -12,12 +12,23 @@
     <header>
       <div class="title-row">
         <h1 id="page-title">Loading…</h1>
-        <label class="board-picker">
-          <span>Board</span>
-          <select id="board-select" aria-label="Choose workstream board"></select>
-        </label>
+        <div class="header-tools">
+          <label class="board-search">
+            <span class="visually-hidden">Search boards</span>
+            <input
+              id="board-search"
+              type="search"
+              placeholder="Search nodes across boards…"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </label>
+          <label class="board-picker">
+            <span>Board</span>
+            <select id="board-select" aria-label="Choose workstream board"></select>
+          </label>
+        </div>
       </div>
-      <p id="page-caption" class="caption"></p>
     </header>
 
     <div class="layout">
@@ -47,10 +58,12 @@
 
       <section class="panel panel-details">
         <div class="panel-head">
-          <h2>Branches</h2>
+          <h2 id="details-heading">Branches</h2>
+          <button type="button" id="search-back" class="search-back" hidden>Back</button>
         </div>
         <div id="branch-board" class="branch-board-scroll"></div>
-        <p class="hint">
+        <div id="search-results" class="branch-board-scroll search-results" hidden></div>
+        <p id="details-hint" class="hint">
           Both columns are viewport-sized with their own scrollbars so large graphs
           and long branch lists stay inside the viewport.
         </p>

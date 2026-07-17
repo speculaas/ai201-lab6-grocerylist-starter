@@ -4,7 +4,7 @@ Personal study board for the Project 6 homework thread: Mermaid overview + expan
 
 **Hosted from this GroceryList starter repo for github.io convenience** — content is about **CineLog Project 6**, not the GroceryList lab API. See repo-root [`WORKSTREAM_BOARD.md`](../../WORKSTREAM_BOARD.md).
 
-**Interaction:** click a gitGraph commit to open the matching milestone on the right; click a card to highlight the graph. Titles in `mermaid` must match `branches[].nodes[].title` (or a branch label).
+**Interaction:** click a gitGraph commit to open the matching milestone on the right; click a card to highlight the graph. Titles in `mermaid` must match `branches[].nodes[].title` (or a branch label). Header search scans **nodes across all boards** and temporarily replaces the right column with hits; Back restores the branch cards.
 
 **Not** repository commit history — conceptual workstreams only.
 

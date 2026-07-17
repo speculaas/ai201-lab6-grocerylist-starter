@@ -5,9 +5,13 @@
  */
 
 const titleEl = document.getElementById("page-title");
-const captionEl = document.getElementById("page-caption");
 const mermaidHost = document.getElementById("mermaid-host");
 const boardEl = document.getElementById("branch-board");
+const searchResultsEl = document.getElementById("search-results");
+const searchInputEl = document.getElementById("board-search");
+const searchBackEl = document.getElementById("search-back");
+const detailsHeadingEl = document.getElementById("details-heading");
+const detailsHintEl = document.getElementById("details-hint");
 const graphHintEl = document.getElementById("graph-hint");
 const boardSelectEl = document.getElementById("board-select");
 
@@ -20,6 +24,13 @@ let graphZoom = 1;
 let graphTheme = "default";
 let mermaidBaseSize = null; // { w, h } of unscaled SVG
 let mermaidRenderSeq = 0;
+/** @type {{ id: string, file: string, label: string }[]} */
+let boardManifest = [];
+let currentBoardId = "";
+/** @type {Array<{boardId:string, boardLabel:string, branchId:string, branchLabel:string, nodeId:string, title:string, status:string, haystack:string, snippet:string}>} */
+let searchIndex = [];
+let searchOverlayOpen = false;
+let searchTimer = null;
 const ORIENT_KEY = "fedprint-status-gitgraph-orient";
 const ZOOM_KEY = "fedprint-status-gitgraph-zoom";
 const THEME_KEY = "fedprint-status-gitgraph-theme";
@@ -52,8 +63,10 @@ async function chooseBoard() {
   const manifest = await response.json();
   const boards = Array.isArray(manifest.boards) ? manifest.boards : [];
   if (!boards.length) throw new Error("data/boards.json contains no boards");
+  boardManifest = boards;
 
-  const requestedId = new URLSearchParams(window.location.search).get("board");
+  const params = new URLSearchParams(window.location.search);
+  const requestedId = params.get("board");
   const board =
     boards.find((item) => item.id === requestedId) ||
     boards.find((item) => item.id === manifest.default) ||
@@ -71,10 +84,197 @@ async function chooseBoard() {
   boardSelectEl.addEventListener("change", () => {
     const url = new URL(window.location.href);
     url.searchParams.set("board", boardSelectEl.value);
+    url.searchParams.delete("node");
     window.location.assign(url);
   });
 
+  currentBoardId = board.id;
   return board;
+}
+
+function snippetText(text, maxLen = 140) {
+  const cleaned = String(text || "").replace(/\s+/g, " ").trim();
+  if (!cleaned) return "";
+  return cleaned.length > maxLen ? `${cleaned.slice(0, maxLen)}…` : cleaned;
+}
+
+async function buildSearchIndex(boards) {
+  const entries = [];
+  await Promise.all(
+    (boards || []).map(async (board) => {
+      try {
+        const response = await fetch(`data/${board.file}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        for (const branch of data.branches || []) {
+          for (const node of branch.nodes || []) {
+            const haystack = normalizeTitle(
+              [
+                board.label,
+                board.id,
+                branch.label,
+                branch.id,
+                branch.summary,
+                node.title,
+                node.id,
+                node.detail,
+                ...(node.commands || []),
+              ]
+                .filter(Boolean)
+                .join(" ")
+            );
+            entries.push({
+              boardId: board.id,
+              boardLabel: board.label || board.id,
+              branchId: branch.id,
+              branchLabel: branch.label || branch.id,
+              nodeId: node.id,
+              title: node.title || node.id,
+              status: node.status || "open",
+              haystack,
+              snippet: snippetText(node.detail || branch.summary || ""),
+            });
+          }
+        }
+      } catch (_) {
+        /* skip missing/unreadable boards */
+      }
+    })
+  );
+  return entries;
+}
+
+function runSearch(query) {
+  const tokens = normalizeTitle(query).split(" ").filter(Boolean);
+  if (!tokens.length) return [];
+  return searchIndex
+    .filter((entry) => tokens.every((token) => entry.haystack.includes(token)))
+    .slice(0, 80);
+}
+
+function setSearchOverlay(open, { heading, hint } = {}) {
+  searchOverlayOpen = Boolean(open);
+  boardEl.hidden = searchOverlayOpen;
+  searchResultsEl.hidden = !searchOverlayOpen;
+  searchBackEl.hidden = !searchOverlayOpen;
+  detailsHeadingEl.textContent = heading || (searchOverlayOpen ? "Search results" : "Branches");
+  if (detailsHintEl) {
+    detailsHintEl.textContent =
+      hint ||
+      (searchOverlayOpen
+        ? "Click a hit to open that node. Back restores the branch cards for the current board."
+        : "Both columns are viewport-sized with their own scrollbars so large graphs and long branch lists stay inside the viewport.");
+  }
+}
+
+function exitSearchOverlay({ clearInput = false } = {}) {
+  if (clearInput && searchInputEl) searchInputEl.value = "";
+  setSearchOverlay(false);
+  searchResultsEl.innerHTML = "";
+}
+
+function renderSearchResults(hits, query) {
+  if (!hits.length) {
+    searchResultsEl.innerHTML = `<p class="search-empty">No nodes matched “${escapeHtml(query)}”.</p>`;
+    setSearchOverlay(true, { heading: "Search results" });
+    return;
+  }
+
+  searchResultsEl.innerHTML = hits
+    .map(
+      (hit) => `
+      <button
+        type="button"
+        class="search-hit"
+        data-board-id="${escapeHtml(hit.boardId)}"
+        data-branch-id="${escapeHtml(hit.branchId)}"
+        data-node-id="${escapeHtml(hit.nodeId)}"
+      >
+        <div class="search-hit-meta">
+          <span>${escapeHtml(hit.boardLabel)}</span>
+          <span>·</span>
+          <span>${escapeHtml(hit.branchLabel)}</span>
+          <span class="status ${escapeHtml(hit.status)}">${escapeHtml(hit.status)}</span>
+        </div>
+        <p class="search-hit-title">${escapeHtml(hit.title)}</p>
+        ${hit.snippet ? `<p class="search-hit-snippet">${escapeHtml(hit.snippet)}</p>` : ""}
+      </button>
+    `
+    )
+    .join("");
+
+  searchResultsEl.querySelectorAll(".search-hit").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      openSearchHit({
+        boardId: btn.dataset.boardId,
+        branchId: btn.dataset.branchId,
+        nodeId: btn.dataset.nodeId,
+      });
+    });
+  });
+
+  setSearchOverlay(true, {
+    heading: `${hits.length} result${hits.length === 1 ? "" : "s"}`,
+  });
+}
+
+function openSearchHit(hit) {
+  if (!hit?.boardId || !hit?.nodeId) return;
+  if (hit.boardId === currentBoardId) {
+    exitSearchOverlay({ clearInput: true });
+    focusBoardTarget({ type: "node", branchId: hit.branchId, nodeId: hit.nodeId });
+    const url = new URL(window.location.href);
+    url.searchParams.set("board", hit.boardId);
+    url.searchParams.set("node", hit.nodeId);
+    history.replaceState(null, "", url);
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("board", hit.boardId);
+  url.searchParams.set("node", hit.nodeId);
+  window.location.assign(url);
+}
+
+function wireSearch() {
+  if (!searchInputEl) return;
+
+  const applyQuery = () => {
+    const query = searchInputEl.value.trim();
+    if (!query) {
+      exitSearchOverlay();
+      return;
+    }
+    renderSearchResults(runSearch(query), query);
+  };
+
+  searchInputEl.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyQuery, 120);
+  });
+
+  searchInputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      exitSearchOverlay({ clearInput: true });
+      searchInputEl.blur();
+    }
+  });
+
+  searchBackEl?.addEventListener("click", () => {
+    exitSearchOverlay({ clearInput: true });
+  });
+}
+
+function focusNodeFromUrl() {
+  const nodeId = new URLSearchParams(window.location.search).get("node");
+  if (!nodeId) return;
+  for (const branch of catalog.branches || []) {
+    const node = (branch.nodes || []).find((n) => n.id === nodeId);
+    if (node) {
+      focusBoardTarget({ type: "node", branchId: branch.id, nodeId: node.id });
+      return;
+    }
+  }
 }
 
 function buildCatalog(branches) {
@@ -619,13 +819,16 @@ function wireZoomControls() {
     catalog = buildCatalog(data.branches || []);
     titleEl.textContent = data.title || "Workstream board";
     document.title = data.title || "Workstream board";
-    captionEl.textContent = data.caption || "";
     boardEl.innerHTML = (data.branches || []).map(renderBranch).join("");
     wireExpandCollapse();
     wireBoardNodeClicks();
     wireOrientToggle();
     wireThemeCycle();
     wireZoomControls();
+    wireSearch();
+    setSearchOverlay(false);
+
+    searchIndex = await buildSearchIndex(boardManifest);
 
     try {
       const saved = localStorage.getItem(ORIENT_KEY);
@@ -653,12 +856,13 @@ function wireZoomControls() {
     applyMermaidThemeConfig();
 
     await renderMermaid(data.mermaid);
+    focusNodeFromUrl();
     setGraphHint(
-      "Both columns stay in the viewport and scroll internally. Use LR/TB to rotate, the theme button to cycle Mermaid themes, and − / + to zoom (or Ctrl/⌘ + scroll on the graph)."
+      "Search nodes across boards from the header. Use LR/TB, theme, and zoom on the graph; click cards or commits to focus."
     );
   } catch (err) {
     titleEl.textContent = "Failed to load status board";
-    captionEl.textContent = String(err.message || err);
+    setGraphHint(String(err.message || err));
     console.error(err);
   }
 })();
