@@ -20,6 +20,11 @@
       "id": "learning-capsules",
       "file": "workstream.learning-capsules.json",
       "label": "Learning Capsules"
+    },
+    {
+      "id": "git-build-remotes",
+      "file": "workstream.git-build-remotes.json",
+      "label": "Git, Remotes & CMake Isolation"
     }
   ]
 }

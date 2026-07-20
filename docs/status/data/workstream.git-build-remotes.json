@@ -1,0 +1,186 @@
+{
+  "title": "Git history, remotes, and isolated CMake builds",
+  "caption": "A learning-capsule board summarizing merge ancestry, fast-forward, cherry-pick, remote-tracking references across GitHub/Mac/Windows, and the closest Make/CMake equivalents to Python virtual environments. Diagrams are conceptual and use Mermaid-compatible syntax.",
+  "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-common\"\n    branch feature\n    commit id: \"E-feature\"\n    commit id: \"F-feature-tip\"\n    checkout main\n    commit id: \"C-main\"\n    commit id: \"D-main-tip\"\n    checkout feature\n    merge main id: \"M-merge\"",
+  "branches": [
+    {
+      "id": "build_isolation",
+      "label": "Make/CMake isolation",
+      "status": "done",
+      "summary": "Separate generated build state from source and pin the compiler/dependencies when stronger reproducibility is needed.",
+      "nodes": [
+        {
+          "id": "venv_analogy",
+          "title": "What is similar to venv for Make/CMake?",
+          "status": "done",
+          "detail": "QUESTION\nIs there a venv-like mechanism for Make or CMake?\n\nANSWER\nThere is no single exact equivalent. Python venv isolates an interpreter and installed packages. Make is primarily a command runner, while CMake configures and generates a build system. The closest everyday equivalent is an out-of-source build directory, such as build/debug or build/release. Delete that directory to discard CMake's cache and generated files without touching source.\n\nFOR STRONGER ISOLATION\nUse CMakePresets.json to standardize configure/build options; a compiler or SDK environment to select toolchains; Conan or vcpkg for C/C++ dependencies; and a container, Nix, or similar reproducible environment when the compiler, OS packages, and tools must also be pinned.\n\nTAKEAWAY\nUse a build directory for disposable build state. Add presets and dependency/toolchain management when you need repeatability comparable to a Python environment lockup.",
+          "commands": [
+            "cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug",
+            "cmake --build build/debug",
+            "ctest --test-dir build/debug",
+            "rm -rf build/debug",
+            "cmake --preset debug",
+            "cmake --build --preset debug"
+          ],
+          "concepts": [
+            "out-of-source build",
+            "CMake cache",
+            "CMake presets",
+            "toolchain",
+            "Conan",
+            "vcpkg",
+            "container",
+            "Nix"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "merge_cherry_pick",
+      "label": "Merge, fast-forward, cherry-pick",
+      "status": "done",
+      "summary": "Merge uses ancestry and a merge base; cherry-pick reapplies one selected commit's patch; fast-forward only moves a reference.",
+      "nodes": [
+        {
+          "id": "merge_ancestry",
+          "title": "Merge traces through diverging history",
+          "status": "done",
+          "detail": "QUESTION\nDoes git merge inspect the diverging history or only one tip commit?\n\nANSWER\nA normal three-way merge uses both tips and their best common ancestor (merge base). In the example, B is the merge base, D is main's tip, and F is feature's tip. Git combines the changes from B to D with the changes from B to F. If both sides diverged, the result is normally recorded by merge commit M with parents D and F.\n\nCONTRAST\nCherry-pick does not integrate the selected branch's ancestry. It takes the change introduced by one selected commit relative to its parent and reapplies it as a new commit on the current branch.\n\nVERIFY\nUse git merge-base feature main to print the common ancestor, and git log --graph --decorate --oneline --all to inspect reachability.",
+          "commands": [
+            "git merge-base feature main",
+            "git log --graph --decorate --oneline --all",
+            "git switch feature",
+            "git merge main"
+          ],
+          "concepts": [
+            "merge base",
+            "three-way merge",
+            "reachability",
+            "two-parent merge commit"
+          ]
+        },
+        {
+          "id": "fast_forward",
+          "title": "Fast-forward is reference movement",
+          "status": "done",
+          "detail": "QUESTION\nWhat happens when the current branch has no unique commits?\n\nANSWER\nIf feature still points to B and main points to descendant D, Git can move feature directly from B to D. No content combination and no merge commit are required. Mermaid gitGraph does not precisely display two movable ref labels on the same commit, so the before/after snapshots use commit labels to explain the ref positions.",
+          "commands": [
+            "git switch feature",
+            "git merge --ff-only main"
+          ],
+          "concepts": [
+            "fast-forward",
+            "ancestor",
+            "reference movement"
+          ]
+        },
+        {
+          "id": "cherry_pick",
+          "title": "Cherry-pick one selected change",
+          "status": "done",
+          "detail": "QUESTION\nHow is cherry-pick different from merge?\n\nANSWER\nThe diagram creates D-pick-source on main, switches to feature, and cherry-picks that existing commit. Mermaid creates a synthetic cherry-pick commit on feature. The source ID must already exist, must not be in the current branch's ancestry, and should not be a merge commit unless a parent is specified.\n\nSYNTAX CORRECTION\nCreating a branch in Mermaid gitGraph also switches to it. Therefore each later checkout is explicit. The default main branch already exists, so never declare branch main.",
+          "commands": [
+            "git switch feature",
+            "git cherry-pick D-pick-source"
+          ],
+          "concepts": [
+            "patch replay",
+            "new commit identity",
+            "unique Mermaid commit IDs"
+          ]
+        }
+      ],
+      "gitGraphSnapshots": [
+        {
+          "id": "diverging",
+          "title": "Diverging histories before merge",
+          "note": "B-common is the merge base.",
+          "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-common\"\n    branch feature\n    commit id: \"E-feature\"\n    commit id: \"F-feature-tip\"\n    checkout main\n    commit id: \"C-main\"\n    commit id: \"D-main-tip\""
+        },
+        {
+          "id": "merged",
+          "title": "Merge main into feature",
+          "note": "M-merge has the previous feature tip and main tip as parents.",
+          "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-common\"\n    branch feature\n    commit id: \"E-feature\"\n    commit id: \"F-feature-tip\"\n    checkout main\n    commit id: \"C-main\"\n    commit id: \"D-main-tip\"\n    checkout feature\n    merge main id: \"M-merge\""
+        },
+        {
+          "id": "ff_before",
+          "title": "Fast-forward: before",
+          "note": "Feature remains at ancestor B while main advances to D.",
+          "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-feature-tip\"\n    branch feature\n    checkout main\n    commit id: \"C\"\n    commit id: \"D-main-tip\""
+        },
+        {
+          "id": "ff_after",
+          "title": "Fast-forward: after",
+          "note": "Conceptually both names point to D; the label communicates this because gitGraph cannot attach arbitrary ref labels precisely.",
+          "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B\"\n    commit id: \"C\"\n    commit id: \"D-main-and-feature\""
+        },
+        {
+          "id": "cherry_pick",
+          "title": "Cherry-pick D from main onto feature",
+          "note": "Uses the official operation form cherry-pick id: \"...\" and an already-declared source commit on another branch.",
+          "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-common\"\n    branch feature\n    commit id: \"E-feature\"\n    checkout main\n    commit id: \"C-main\"\n    commit id: \"D-pick-source\"\n    checkout feature\n    cherry-pick id: \"D-pick-source\""
+        }
+      ]
+    },
+    {
+      "id": "remotes_refs",
+      "label": "Remotes and refs",
+      "status": "done",
+      "summary": "A remote name groups a URL and fetch rules; fetched remote-tracking refs are local cached observations, not branches recursively exported to another clone.",
+      "nodes": [
+        {
+          "id": "upper_level_metaphor",
+          "title": "The upper-level entity metaphor",
+          "status": "done",
+          "detail": "Your tree metaphor is useful: upstream can be pictured as a named grouping containing upstream/main and upstream/cohort/su26-start. The qualification is that upstream is a remote configuration name, not a directory or server-side container. It stores a URL and refspecs. After fetch, refs/remotes/upstream/* are local remote-tracking refs recording the last fetched server state. Local branches live under refs/heads/*.",
+          "commands": [
+            "git remote get-url upstream",
+            "git config --get-all remote.upstream.fetch",
+            "git show-ref",
+            "git branch -r --list 'upstream/*'"
+          ],
+          "concepts": [
+            "remote configuration",
+            "fetch refspec",
+            "refs/heads",
+            "refs/remotes"
+          ]
+        },
+        {
+          "id": "remote_of_remote",
+          "title": "A remote repository can itself have remotes",
+          "status": "done",
+          "detail": "The Mac working repository can fetch GitHub through its locally named upstream remote, while Windows fetches the Mac through its locally named origin remote. That does not create recursive remote inheritance. Windows normally receives branches under the Mac repository's refs/heads/*, such as Mac main. It does not normally receive the Mac's refs/remotes/upstream/* cache. Once the Mac merges upstream/main into its local main, the resulting commit becomes reachable from Mac main and can then be fetched by Windows as origin/main.",
+          "commands": [
+            "git ls-remote --heads origin",
+            "git ls-remote --heads upstream",
+            "git for-each-ref --format='%(objectname:short) %(refname)' refs/heads/",
+            "git fetch origin"
+          ],
+          "concepts": [
+            "repository chain",
+            "advertised refs",
+            "non-recursive fetch",
+            "downstream clone"
+          ]
+        }
+      ],
+      "diagrams": [
+        {
+          "id": "repository_ref_flow",
+          "title": "GitHub to Mac to Windows",
+          "type": "flowchart",
+          "mermaid": "flowchart LR\n    subgraph GH[\"GitHub original repository\"]\n        GHMain[\"refs/heads/main\"]\n        GHCohort[\"refs/heads/cohort/su26-start\"]\n    end\n\n    subgraph Mac[\"Mac repository\"]\n        MacMain[\"local: refs/heads/main\"]\n        MacOrigin[\"cached: refs/remotes/origin/main\"]\n        MacUpMain[\"cached: refs/remotes/upstream/main\"]\n        MacUpCohort[\"cached: refs/remotes/upstream/cohort/su26-start\"]\n    end\n\n    subgraph Win[\"Windows repository\"]\n        WinMain[\"local: refs/heads/main\"]\n        WinOrigin[\"cached: refs/remotes/origin/main\"]\n    end\n\n    GHMain -- \"Mac: git fetch upstream\" --> MacUpMain\n    GHCohort -- \"Mac: git fetch upstream\" --> MacUpCohort\n    MacUpMain -- \"Mac: git merge upstream/main\" --> MacMain\n    MacMain -- \"Windows: git fetch origin\" --> WinOrigin\n    WinOrigin -- \"Windows: fast-forward main\" --> WinMain"
+        },
+        {
+          "id": "repository_chain_gitgraph",
+          "title": "Commit-flow analogy in gitGraph aesthetics",
+          "type": "gitGraph",
+          "note": "Conceptual only: branch lanes stand in for repositories/ref views. Use the flowchart for exact ref ownership.",
+          "mermaid": "gitGraph LR:\n    commit id: \"7caf4e5-base\"\n    branch github_upstream\n    commit id: \"d5f196d-upstream\"\n    checkout main\n    merge github_upstream id: \"1a525a1-Mac-main\"\n    branch windows_view\n    commit id: \"Windows-fetches-Mac-main\""
+        }
+      ]
+    }
+  ]
+}
