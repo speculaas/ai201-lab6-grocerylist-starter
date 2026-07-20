@@ -1,7 +1,7 @@
 {
   "title": "Git history, remotes, and isolated CMake builds",
-  "caption": "A learning-capsule board summarizing merge ancestry, fast-forward, cherry-pick, remote-tracking references across GitHub/Mac/Windows, and the closest Make/CMake equivalents to Python virtual environments. Diagrams are conceptual and use Mermaid-compatible syntax.",
-  "mermaid": "gitGraph LR:\n    commit id: \"A\"\n    commit id: \"B-common\"\n    branch feature\n    commit id: \"E-feature\"\n    commit id: \"F-feature-tip\"\n    checkout main\n    commit id: \"C-main\"\n    commit id: \"D-main-tip\"\n    checkout feature\n    merge main id: \"M-merge\"",
+  "caption": "Conceptual workstream of the git remotes / merge / CMake isolation dialogue. Overview commits match card titles for click focus; teaching gitGraphs remain in branch snapshots.",
+  "mermaid": "gitGraph LR:\n    commit id: \"What is similar to venv for Make/CMake?\"\n    branch merge_cherry_pick\n    checkout merge_cherry_pick\n    commit id: \"Merge traces through diverging history\"\n    commit id: \"Fast-forward is reference movement\"\n    commit id: \"Cherry-pick one selected change\"\n    checkout main\n    branch remotes_refs\n    checkout remotes_refs\n    commit id: \"The upper-level entity metaphor\"\n    commit id: \"A remote repository can itself have remotes\"",
   "branches": [
     {
       "id": "build_isolation",
