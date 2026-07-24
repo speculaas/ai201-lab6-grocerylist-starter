@@ -1,0 +1,406 @@
+{
+  "title": "Yang Zhilin scholarly reference tree: HotpotQA to Kimi",
+  "caption": "Conceptual gitGraph-style scholarly journey, not git history. Citation edges are curated rather than exhaustive; the explicit citation_edges array is authoritative because Mermaid gitGraph cannot represent arbitrary citation DAGs.",
+  "as_of": "2026-07-24",
+  "scope": "One-hop, high-signal ancestors and descendants around the five user-supplied seed papers, plus a small post-PhD bridge. Recent Kimi forward citations require periodic refresh.",
+  "mermaid": "gitGraph LR:\\n    commit id: \"Attention Is All You Need (2017)\"\\n    commit id: \"HotpotQA: Diverse, Explainable Multi-hop QA (2018)\"\\n    branch long_context\\n    checkout long_context\\n    commit id: \"Transformer-XL: Beyond a Fixed-Length Context (2019)\"\\n    commit id: \"XLNet: Generalized Autoregressive Pretraining (2019)\"\\n    checkout main\\n    commit id: \"GLM: Autoregressive Blank Infilling (2022)\"\\n    commit id: \"Kimi k1.5: Scaling RL with LLMs (2025)\"\\n    branch multimodal\\n    checkout multimodal\\n    commit id: \"Kimi-VL Technical Report (2025)\"\\n    checkout main\\n    branch citation_children\\n    checkout citation_children\\n    commit id: \"A Simple Yet Strong Pipeline for HotpotQA (2020)\"\\n    commit id: \"Longformer: The Long-Document Transformer (2020)\"\\n    commit id: \"ELECTRA: Pre-training Text Encoders as Discriminators (2020)\"\\n    checkout main\\n    commit id: \"OPEN: Refresh 2025-2026 citing-paper frontier\"",
+  "branches": [
+    {
+      "id": "foundations",
+      "label": "Selected ancestors",
+      "status": "done",
+      "summary": "Curated, high-signal works cited by or conceptually foundational to Yang's seed papers; not an exhaustive bibliography.",
+      "nodes": [
+        {
+          "id": "attention",
+          "title": "Attention Is All You Need (2017)",
+          "status": "done",
+          "detail": "Ancestor: self-attention and the Transformer architecture; selected because Transformer-XL and XLNet explicitly extend the Transformer family.",
+          "commands": []
+        },
+        {
+          "id": "relative_pos",
+          "title": "Self-Attention with Relative Position Representations (2018)",
+          "status": "done",
+          "detail": "Ancestor: relative-position attention is a direct conceptual precursor to Transformer-XL's relative positional formulation.",
+          "commands": []
+        },
+        {
+          "id": "bert",
+          "title": "BERT: Pre-training of Deep Bidirectional Transformers (2018)",
+          "status": "done",
+          "detail": "Ancestor/contrast: XLNet explicitly frames permutation language modeling against BERT-style masked denoising.",
+          "commands": []
+        },
+        {
+          "id": "squad",
+          "title": "SQuAD: 100,000+ Questions for Machine Comprehension (2016)",
+          "status": "done",
+          "detail": "Ancestor: major extractive QA dataset used by HotpotQA as context for the limitations of predominantly single-document QA.",
+          "commands": []
+        },
+        {
+          "id": "wiki_hop",
+          "title": "Constructing Datasets for Multi-hop Reading Comprehension (2018)",
+          "status": "done",
+          "detail": "Ancestor: WikiHop/QAngaroo is a key earlier multi-hop QA benchmark contrasted with HotpotQA's natural questions and supporting facts.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "phd_core",
+      "label": "CMU PhD core",
+      "status": "done",
+      "summary": "Yang's three best-known CMU-era contributions in multi-hop QA, long-context modeling, and generalized autoregressive pretraining.",
+      "nodes": [
+        {
+          "id": "hotpot",
+          "title": "HotpotQA: Diverse, Explainable Multi-hop QA (2018)",
+          "status": "done",
+          "detail": "Yang-led PhD-era dataset: 113k Wikipedia-based QA pairs, multi-document reasoning, sentence-level supporting facts, and comparison questions. DOI 10.18653/v1/D18-1259.",
+          "commands": []
+        },
+        {
+          "id": "txl",
+          "title": "Transformer-XL: Beyond a Fixed-Length Context (2019)",
+          "status": "done",
+          "detail": "Yang co-led this long-context language-model architecture, adding segment recurrence and relative positional encoding. ACL Anthology ID P19-1285; DOI 10.18653/v1/P19-1285.",
+          "commands": []
+        },
+        {
+          "id": "xlnet",
+          "title": "XLNet: Generalized Autoregressive Pretraining (2019)",
+          "status": "done",
+          "detail": "Yang co-led XLNet, combining permutation-based autoregressive pretraining with ideas from Transformer-XL; NeurIPS 2019.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "descendants",
+      "label": "Selected scholarly children",
+      "status": "done",
+      "summary": "Representative papers that cite or directly build on the PhD-era seed papers.",
+      "nodes": [
+        {
+          "id": "dfgn",
+          "title": "Dynamically Fused Graph Network for Multi-hop Reasoning (2019)",
+          "status": "done",
+          "detail": "Selected child: a prominent HotpotQA-era graph-reasoning system that cites/uses HotpotQA.",
+          "commands": []
+        },
+        {
+          "id": "quark",
+          "title": "A Simple Yet Strong Pipeline for HotpotQA (2020)",
+          "status": "done",
+          "detail": "Selected child: demonstrates that a comparatively simple BERT pipeline can be highly competitive on HotpotQA.",
+          "commands": []
+        },
+        {
+          "id": "compressive",
+          "title": "Compressive Transformers for Long-Range Sequence Modelling (2020)",
+          "status": "done",
+          "detail": "Selected child: extends the recurrent memory line associated with Transformer-XL by compressing older memories.",
+          "commands": []
+        },
+        {
+          "id": "longformer",
+          "title": "Longformer: The Long-Document Transformer (2020)",
+          "status": "done",
+          "detail": "Selected child: long-context Transformer work that situates itself among approaches including Transformer-XL.",
+          "commands": []
+        },
+        {
+          "id": "electra",
+          "title": "ELECTRA: Pre-training Text Encoders as Discriminators (2020)",
+          "status": "done",
+          "detail": "Selected child: influential pretraining work that compares with and cites XLNet.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "bridge",
+      "label": "Post-PhD research bridge",
+      "status": "done",
+      "summary": "Selected Yang coauthored work linking the PhD program to later foundation-model research.",
+      "nodes": [
+        {
+          "id": "glm",
+          "title": "GLM: Autoregressive Blank Infilling (2022)",
+          "status": "done",
+          "detail": "Yang coauthored GLM, continuing generalized autoregressive pretraining through blank infilling.",
+          "commands": []
+        },
+        {
+          "id": "ptuning",
+          "title": "P-Tuning v2: Prompt Tuning Across Scales and Tasks (2022)",
+          "status": "done",
+          "detail": "Yang coauthored this parameter-efficient adaptation work, part of the post-PhD path toward large-model systems.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "kimi_ancestors",
+      "label": "Kimi technical ancestors",
+      "status": "done",
+      "summary": "Selected technical ancestors for RL post-training, multimodality, and sparse experts; exact report-level references should be checked in the PDFs.",
+      "nodes": [
+        {
+          "id": "ppo",
+          "title": "Proximal Policy Optimization Algorithms (2017)",
+          "status": "done",
+          "detail": "Selected RL ancestor for policy optimization in language-model post-training.",
+          "commands": []
+        },
+        {
+          "id": "rlhf",
+          "title": "Training Language Models to Follow Instructions with Human Feedback (2022)",
+          "status": "done",
+          "detail": "Selected LLM post-training ancestor: instruction tuning plus reinforcement learning from human feedback.",
+          "commands": []
+        },
+        {
+          "id": "vit",
+          "title": "An Image Is Worth 16x16 Words: Vision Transformer (2021)",
+          "status": "done",
+          "detail": "Selected vision ancestor for transformer-based image encoding.",
+          "commands": []
+        },
+        {
+          "id": "moe",
+          "title": "Switch Transformers: Scaling to Trillion Parameter Models (2021)",
+          "status": "done",
+          "detail": "Selected sparse Mixture-of-Experts ancestor relevant to Kimi-VL's efficient activated-parameter design.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "kimi_reasoning",
+      "label": "Kimi reasoning",
+      "status": "done",
+      "summary": "Kimi's 2025 long-context reinforcement-learning report.",
+      "nodes": [
+        {
+          "id": "k15",
+          "title": "Kimi k1.5: Scaling RL with LLMs (2025)",
+          "status": "done",
+          "detail": "Kimi Team report, with Zhilin Yang among the authors. It emphasizes 128K-context RL, improved policy optimization, multimodal reasoning, and long-to-short transfer. arXiv:2501.12599.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "kimi_multimodal",
+      "label": "Kimi multimodal",
+      "status": "done",
+      "summary": "Kimi's 2025 efficient vision-language and multimodal-reasoning report.",
+      "nodes": [
+        {
+          "id": "kimi_vl",
+          "title": "Kimi-VL Technical Report (2025)",
+          "status": "done",
+          "detail": "Kimi Team report, with Zhilin Yang among the authors. It describes an MoE VLM with 2.8B activated decoder parameters, native-resolution MoonViT, 128K context, agent capabilities, and a thinking variant. arXiv:2504.07491.",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "verification",
+      "label": "Living frontier",
+      "status": "open",
+      "summary": "Recent forward-citation data is a living, database-dependent frontier and remains open for refresh.",
+      "nodes": [
+        {
+          "id": "open_verify",
+          "title": "OPEN: Refresh 2025-2026 citing-paper frontier",
+          "status": "open",
+          "detail": "Forward citations for recent Kimi reports change quickly. Re-query OpenAlex, Semantic Scholar, Google Scholar, and Crossref/OpenCitations before publication; verify each edge in the citing paper's reference list.",
+          "commands": []
+        }
+      ]
+    }
+  ],
+  "citation_edges": [
+    {
+      "from": "attention",
+      "to": "txl",
+      "relation": "cites"
+    },
+    {
+      "from": "relative_pos",
+      "to": "txl",
+      "relation": "cites"
+    },
+    {
+      "from": "attention",
+      "to": "xlnet",
+      "relation": "cites"
+    },
+    {
+      "from": "bert",
+      "to": "xlnet",
+      "relation": "cites"
+    },
+    {
+      "from": "txl",
+      "to": "xlnet",
+      "relation": "cites"
+    },
+    {
+      "from": "squad",
+      "to": "hotpot",
+      "relation": "cites"
+    },
+    {
+      "from": "wiki_hop",
+      "to": "hotpot",
+      "relation": "cites"
+    },
+    {
+      "from": "hotpot",
+      "to": "dfgn",
+      "relation": "cited_by"
+    },
+    {
+      "from": "hotpot",
+      "to": "quark",
+      "relation": "cited_by"
+    },
+    {
+      "from": "txl",
+      "to": "compressive",
+      "relation": "cited_by"
+    },
+    {
+      "from": "txl",
+      "to": "longformer",
+      "relation": "cited_by"
+    },
+    {
+      "from": "xlnet",
+      "to": "electra",
+      "relation": "cited_by"
+    },
+    {
+      "from": "xlnet",
+      "to": "glm",
+      "relation": "intellectual_lineage"
+    },
+    {
+      "from": "glm",
+      "to": "k15",
+      "relation": "scholarly_journey"
+    },
+    {
+      "from": "ptuning",
+      "to": "k15",
+      "relation": "scholarly_journey"
+    },
+    {
+      "from": "ppo",
+      "to": "k15",
+      "relation": "selected_technical_ancestor"
+    },
+    {
+      "from": "rlhf",
+      "to": "k15",
+      "relation": "selected_technical_ancestor"
+    },
+    {
+      "from": "vit",
+      "to": "kimi_vl",
+      "relation": "selected_technical_ancestor"
+    },
+    {
+      "from": "moe",
+      "to": "kimi_vl",
+      "relation": "selected_technical_ancestor"
+    },
+    {
+      "from": "k15",
+      "to": "kimi_vl",
+      "relation": "same_program_reasoning_lineage"
+    }
+  ],
+  "seed_identifiers": {
+    "hotpotqa": {
+      "canonical_key": "yang_etal_2018_hotpotqa",
+      "doi": "10.18653/v1/D18-1259",
+      "anthology_id": "D18-1259",
+      "arxiv": "1809.09600"
+    },
+    "transformer_xl": {
+      "canonical_key": "dai_etal_2019_transformer_xl",
+      "doi": "10.18653/v1/P19-1285",
+      "anthology_id": "P19-1285",
+      "arxiv": "1901.02860"
+    },
+    "xlnet": {
+      "canonical_key": "yang_etal_2019_xlnet",
+      "venue": "NeurIPS 2019",
+      "arxiv": "1906.08237"
+    },
+    "kimi_k15": {
+      "canonical_key": "kimi_team_2025_k15",
+      "arxiv": "2501.12599"
+    },
+    "kimi_vl": {
+      "canonical_key": "kimi_team_2025_kimi_vl",
+      "arxiv": "2504.07491"
+    }
+  },
+  "duplicate_bibtex_resolution": {
+    "problem": "Both Kimi reports were exported with team2025kimi; BibTeX keys are local labels and must be unique within a bibliography.",
+    "recommended_keys": [
+      "kimi_team_2025_k15",
+      "kimi_team_2025_kimi_vl"
+    ],
+    "bibtex": "@article{kimi_team_2025_k15,\n  title = {Kimi k1.5: Scaling Reinforcement Learning with LLMs},\n  author = {{Kimi Team} and Du, Angang and Gao, Bofei and others},\n  journal = {arXiv preprint arXiv:2501.12599},\n  year = {2025}\n}\n\n@article{kimi_team_2025_kimi_vl,\n  title = {Kimi-VL Technical Report},\n  author = {{Kimi Team} and Du, Angang and Yin, Bohong and others},\n  journal = {arXiv preprint arXiv:2504.07491},\n  year = {2025}\n}"
+  },
+  "sources": [
+    {
+      "id": "acl_P19_1285",
+      "url": "https://aclanthology.org/P19-1285/",
+      "purpose": "Transformer-XL canonical metadata"
+    },
+    {
+      "id": "acl_D18_1259",
+      "url": "https://aclanthology.org/D18-1259/",
+      "purpose": "HotpotQA canonical metadata"
+    },
+    {
+      "id": "neurips_xlnet",
+      "url": "https://proceedings.neurips.cc/paper/2019/hash/dc6a7e655d7e5840e66733e9ee67cc69-Abstract.html",
+      "purpose": "XLNet canonical metadata"
+    },
+    {
+      "id": "arxiv_2501_12599",
+      "url": "https://arxiv.org/abs/2501.12599",
+      "purpose": "Kimi k1.5 versions, authors, abstract"
+    },
+    {
+      "id": "arxiv_2504_07491",
+      "url": "https://arxiv.org/abs/2504.07491",
+      "purpose": "Kimi-VL versions, authors, abstract"
+    },
+    {
+      "id": "yang_homepage",
+      "url": "https://kimiyoung.github.io/",
+      "purpose": "Yang's publication journey"
+    },
+    {
+      "id": "hotpot_homepage",
+      "url": "https://hotpotqa.github.io/",
+      "purpose": "Dataset lineage and downstream benchmark context"
+    }
+  ],
+  "limitations": [
+    "A gitGraph is a visual metaphor for a citation network; it cannot encode arbitrary many-to-many citation edges.",
+    "Ancestor/child selection is curated for readability, not exhaustive.",
+    "Database citation counts and recent citing-paper lists can differ because Google Scholar, Semantic Scholar, OpenAlex, Crossref, and OpenCitations have different coverage."
+  ]
+}

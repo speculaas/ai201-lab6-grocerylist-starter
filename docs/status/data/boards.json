@@ -24,7 +24,12 @@
     {
       "id": "git-build-remotes",
       "file": "workstream.git-build-remotes.json",
-      "label": "Git, Remotes & CMake Isolation"
+      "label": "Git, Remotes &amp; CMake Isolation"
+    },
+    {
+      "id": "yang-zhilin-reference-tree",
+      "file": "yang_zhilin_reference_tree.json",
+      "label": "Yang Zhilin Scholarly Reference Tree"
     }
   ]
 }
